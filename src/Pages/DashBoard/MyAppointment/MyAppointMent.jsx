@@ -30,7 +30,7 @@ const MyAppointMent = () => {
       return data;
     },
   });
-
+  console.log(userBookings);
   // cancel appointme4nt
   const handleCancleAppointment = (_id) => {
     Swal.fire({
