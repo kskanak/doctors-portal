@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthProvider";
 import { toast } from "react-toastify";
 import { GoogleAuthProvider } from "firebase/auth";
+import useToken from "../hooks/UseToken";
 
 const Login = () => {
   const { user, login, setloader, googleSignIn, resetPassword } =
@@ -12,7 +13,9 @@ const Login = () => {
   const from = location.state?.from?.pathname || "/";
   const navigate = useNavigate();
   const googleProvider = new GoogleAuthProvider();
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(" ");
+  const [signInUserEmail, setSignInUserEmail] = useState("");
+  const [token] = useToken(signInUserEmail);
 
   const {
     register,
@@ -20,12 +23,16 @@ const Login = () => {
     handleSubmit,
   } = useForm();
 
+  if (token) {
+    navigate(from, { replace: true });
+  }
+
   const handleLogin = (data) => {
     // sign in implement
     login(data.email, data.password)
       .then((result) => {
         const user = result.user;
-        navigate(from, { replace: true });
+        setSignInUserEmail(data.email);
         toast.info("Logged into account");
       })
       .catch((error) => {
@@ -36,11 +43,33 @@ const Login = () => {
 
   // google sign in implement
 
+  //  userinfo saving to Db
+  const saveUserInfoToDb = (name, email) => {
+    const userInfo = {
+      user: name,
+      email: email,
+    };
+
+    fetch("https://doctors-portal-server-indol-ten.vercel.app/users", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(userInfo),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setSignInUserEmail(email);
+      })
+      .catch((error) => toast.error(error.message));
+  };
+
   const handleGoogleSignIn = () => {
     googleSignIn(googleProvider)
       .then((result) => {
         const user = result.user;
-        navigate(from, { replace: true });
+        saveUserInfoToDb(user.displayName, user.email);
+        // navigate(from, { replace: true });
         toast.success("Sign in with Google");
       })
       .catch((error) => {

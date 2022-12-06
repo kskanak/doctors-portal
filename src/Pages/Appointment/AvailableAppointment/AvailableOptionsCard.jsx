@@ -1,7 +1,7 @@
 import React from "react";
 
 const AvailableOptionsCard = ({ option, setTreatment }) => {
-  const { name, slots } = option;
+  const { name, slots, price } = option;
   return (
     <div className="w-[425px] mx-auto">
       <div className="card  shadow-lg border border-gray-100 text-custom-slate">
@@ -16,6 +16,7 @@ const AvailableOptionsCard = ({ option, setTreatment }) => {
             {slots.length > 0 ? slots.length : "No"}{" "}
             {slots.length > 1 ? "Spaces" : "Space"} Available..
           </p>
+          <p className="text-xs">Fee - {price}</p>
           <div className="card-actions justify-end">
             {/* <button className="p-4 rounded-lg font-bold text-white bg-gradient-to-r from-secondary-accent to-primary-sky">
               Book Appointment

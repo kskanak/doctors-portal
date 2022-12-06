@@ -1,10 +1,11 @@
 import { data } from "autoprefixer";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthProvider";
 import { toast } from "react-toastify";
 import { GoogleAuthProvider } from "firebase/auth";
+import useToken from "../hooks/UseToken";
 
 const Register = () => {
   const { user, signUp, profileUpdate, googleSignIn, setloader, logOut } =
@@ -20,6 +21,13 @@ const Register = () => {
   const from = location.state?.from?.pathname || "/";
   const navigate = useNavigate();
 
+  const [createdUserEmail, setCreatedUserEmail] = useState("");
+  const [token] = useToken(createdUserEmail);
+
+  if (token) {
+    navigate(from, { replace: true });
+  }
+
   const handleRegister = (data) => {
     console.log(data);
     // sign up implement
@@ -27,11 +35,13 @@ const Register = () => {
       .then((result) => {
         const user = result.user;
         handleProfileUpdate(data);
-        logOut()
-          .then(() => {})
-          .catch((error) => {});
+        saveUserInfoToDb(data.name, data.email);
+
+        // logOut()
+        //   .then(() => {})
+        //   .catch((error) => {});
         toast.info("Account successfully created");
-        console.log(user);
+        console.log(data);
       })
       .catch((error) => toast.error(error.message));
   };
@@ -41,17 +51,40 @@ const Register = () => {
       displayName: data.name,
     };
     profileUpdate(profile)
-      .then(() => {
-        // navigate("/");
-      })
+      .then(() => {})
       .catch((error) => console.log(error));
+  };
+
+  //  userinfo saving to Db
+  const saveUserInfoToDb = (name, email) => {
+    const userInfo = {
+      user: name,
+      email: email,
+    };
+    console.log(userInfo, name, email);
+    fetch("https://doctors-portal-server-indol-ten.vercel.app/users", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(userInfo),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setCreatedUserEmail(email);
+      })
+      .catch((error) => toast.error(error.message));
   };
 
   const handleGoogleSignIn = () => {
     googleSignIn(googleProvider)
       .then((result) => {
         const user = result.user;
-        navigate(from, { replace: true });
+        if (user) {
+          console.log(user.displayName, user.email);
+          saveUserInfoToDb(user.displayName, user.email);
+        }
+        // navigate(from, { replace: true });
         toast.success("Sign in with Google");
       })
       .catch((error) => {

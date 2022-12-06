@@ -38,6 +38,7 @@ const AuthProvider = ({ children }) => {
 
   // sign out implement
   const logOut = () => {
+    localStorage.removeItem("AppointmentToken");
     setLoader(true);
     return signOut(auth);
   };

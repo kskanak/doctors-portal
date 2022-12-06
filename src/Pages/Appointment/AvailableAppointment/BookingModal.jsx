@@ -5,7 +5,7 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 
 const BookingModal = ({ treatment, selectedDate, setTreatment, refetch }) => {
   const { user } = useContext(AuthContext);
-  const { name, slots } = treatment;
+  const { name, slots, price } = treatment;
   const date = format(selectedDate, "PP");
 
   const handleBookingSubmit = (e) => {
@@ -19,13 +19,14 @@ const BookingModal = ({ treatment, selectedDate, setTreatment, refetch }) => {
     const booking = {
       patientName,
       phone,
+      price,
       email,
       timeSlot,
       appointment: date,
       treatmentName,
     };
 
-    fetch("http://localhost:5000/bookings", {
+    fetch("https://doctors-portal-server-indol-ten.vercel.app/bookings", {
       method: "POST",
       headers: {
         "content-type": "application/json",
@@ -52,6 +53,7 @@ const BookingModal = ({ treatment, selectedDate, setTreatment, refetch }) => {
       <div className="modal">
         <div className="modal-box relative">
           <h2 className="font-semibold text-2xl">{name}</h2>
+          <p>Fee : {price}</p>
           <label
             htmlFor="Booking-modal"
             className="btn btn-sm btn-circle absolute right-2 top-2"
