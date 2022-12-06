@@ -117,13 +117,6 @@ const Navbar = () => {
     <div className="p-5 md:px-24 md:py-5 relative mb-5">
       <div className="navbar bg-base-100">
         <div className="navbar-start">
-          <label
-            tabIndex={0}
-            className="btn btn-ghost lg:hidden"
-            htmlFor="dashboard-drawyer"
-          >
-            <RiMenuUnfoldLine className="text-2xl" />
-          </label>
           <Link to="/">Doctor's portal</Link>
           {user?.email && (
             <p className="ml-10 text-secondary-accent font-medium hidden md:flex  items-center">

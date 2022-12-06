@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 
 import Navbar from "../Pages/Shared/Navbar/Navbar";
+import { RiMenuUnfoldLine } from "react-icons/ri";
 
 const DashboardLayout = () => {
   const { user } = useContext(AuthContext);
@@ -18,12 +19,20 @@ const DashboardLayout = () => {
   return (
     <div>
       <Navbar></Navbar>
+      <label
+        tabIndex={0}
+        className="btn btn-ghost lg:hidden"
+        htmlFor="dashboard-drawyer"
+      >
+        <RiMenuUnfoldLine className="text-2xl" />
+      </label>
       <div className="drawer drawer-mobile">
         <input
           id="dashboard-drawyer"
           type="checkbox"
           className="drawer-toggle"
         />
+
         <div className="drawer-content border bg-sky-100">
           <Outlet></Outlet>
         </div>

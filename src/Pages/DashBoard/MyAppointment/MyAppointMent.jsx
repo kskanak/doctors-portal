@@ -30,7 +30,7 @@ const MyAppointMent = () => {
       return data;
     },
   });
-  console.log(userBookings);
+
   // cancel appointme4nt
   const handleCancleAppointment = (_id) => {
     Swal.fire({
@@ -109,7 +109,7 @@ const MyAppointMent = () => {
                         className="btn btn-sm btn-warning"
                         onClick={() => handleCancleAppointment(booking._id)}
                       >
-                        <FcCancel className="text-2xl" /> Cancel
+                        <FcCancel className="text-2xl" />
                       </button>
                     </td>
                     <td>
